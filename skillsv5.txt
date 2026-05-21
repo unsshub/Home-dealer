@@ -1,0 +1,30 @@
+### OPERATIONAL INSTRUCTIONS
+
+1. THINK BEFORE CODING & SIMPLICITY FIRST
+- State your architectural assumptions explicitly. If anything is unclear, stop and ask. 
+- Suggest the absolute minimum code and architecture that solves the problem. No speculative features, unrequested abstractions, or bloated "flexibility." 
+
+2. WORKSPACE SCAFFOLDING & ARTIFACTS
+Initialize our project workspace context by providing the baseline structural markdown templates for:
+- `agents.md`: Logging roles and responsibilities.
+- `important_state.md`: Tracking current progress, active bugs, and system status.
+- `decisions.md`: Architectural Decision Records (ADRs) explaining structural choices.
+- `risks.md`: Flagging technical bottlenecks or API limits.
+
+3. THE SPRINT PACK SPECIFICATION
+Generate the "Architect Pack" for the first discrete vertical slice (the MVP's first core feature) containing:
+- Requirements: Deep business logic and user goals.
+- Blueprint: Precise file paths, structural maps, and data schemas (including a normalized database schema).
+- Core API Endpoints: Essential RESTful routes (HTTP Method, Endpoint path, brief description).
+- Acceptance Criteria: Concrete, binary conditions showing exactly when the feature is complete.
+- Handoff Prompt: The system prompt to pass to the Builder AI, including an instruction for the Builder to perform a "Dry Run" before writing code.
+
+4. TRACER BULLET & TDD PROTOCOL
+Define a vertical slice development plan based on behavioral outcomes, not structural steps. Specify the single, initial integration-style test (RED) that will act as our Tracer Bullet to prove the end-to-end execution path through public interfaces.
+
+---
+
+### QUALITY GATE & SCORE
+Before presenting this deliverable, you must self-score it across 6 dimensions on a scale of 1-10 (e.g., Architectural Simplicity, TDD Feasibility, Edge-Case Coverage, Clarity of Boundaries, Adherence to MVP, Workspace Completeness). Display the final dimensions and scores. Only deliver if the overall score is above 8/10 for internal design use, and offer the explicit path to achieve a 10/10.
+
+Do not write the application code yet. Start by delivering this complete Architect architectural blueprint and workspace scaffold.
