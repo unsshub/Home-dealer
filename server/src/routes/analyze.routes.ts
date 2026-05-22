@@ -5,6 +5,7 @@ import { scrapingService } from '../services/scraping.service.js';
 import { registry } from '../engine/calculator.js';
 import { requireAuth } from '../middleware/auth.js';
 import { checkAnalysisLimit } from '../middleware/plan-gate.js';
+import { rateLimit } from '../middleware/rate-limit.js';
 import { properties } from '../db/schema/properties.js';
 import { analyses } from '../db/schema/analyses.js';
 import {
@@ -88,7 +89,7 @@ const analyzeSchema = z.object({
 
 export const analyzeRoutes = Router();
 
-analyzeRoutes.post('/analyze', requireAuth, checkAnalysisLimit, async (req, res, next) => {
+analyzeRoutes.post('/analyze', requireAuth, rateLimit({ max: 10, windowMs: 3600000 }), checkAnalysisLimit, async (req, res, next) => {
   try {
     const body = analyzeSchema.parse(req.body);
 
@@ -230,7 +231,7 @@ function extractStateFromAddress(address: string): string | null {
   return match?.[1] ?? null;
 }
 
-analyzeRoutes.post('/analyze/manual', requireAuth, checkAnalysisLimit, async (req, res, next) => {
+analyzeRoutes.post('/analyze/manual', requireAuth, rateLimit({ max: 30, windowMs: 3600000 }), checkAnalysisLimit, async (req, res, next) => {
   try {
     const body = manualAnalyzeSchema.parse(req.body);
     const p = body.property;
