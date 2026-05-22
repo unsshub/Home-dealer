@@ -1,6 +1,8 @@
 # DSCR Verdict — Handoff
 
-## Status: All core slices complete
+## Status: Deployed to Netlify (missing env vars)
+
+**Live site:** https://beautiful-tarsier-f259a0.netlify.app
 
 ## What's Built
 
@@ -22,7 +24,7 @@
 - Print/PDF via `window.print()`
 - SharePage with verdict card and property summary
 
-### Slice 4 — Stripe Monetization ✅
+### Slice 4 — Stripe Monetization ✅ (code complete, needs keys)
 - Checkout session + Customer Portal + webhook handler
 - `checkAnalysisLimit` middleware (free=3, starter=50, pro/lifetime=∞)
 - `seed-plans.ts` script for subscription_plans table
@@ -33,6 +35,13 @@
 - OKLCH theme system — dark mode first with `.light` toggle via ThemeToggle in header
 - Inter font via Google Fonts
 - All 8 pages use consistent components: LandingPage, LoginPage, RegisterPage, DashboardPage, AnalyzePage, AnalysisDetailPage, SharePage, PricingPage
+
+### Deployment ✅ (needs env vars)
+- `netlify.toml` — build config, API redirect, SPA fallback
+- `server/src/netlify.ts` — Express wrapped with `serverless-http`
+- `server/src/db/session-store.ts` — connect-pg-simple session store (Neon-backed)
+- Production build pipeline: shared → server → client
+- Neon database created, schema pushed, plans seeded
 
 ## Architecture
 
@@ -58,7 +67,7 @@ home-dealer/
 └── docker-compose.yml — Postgres 16 on port 5433
 ```
 
-## How to Run
+## How to Run (Local Dev)
 
 ```bash
 # Start DB
@@ -87,9 +96,39 @@ npm run test --workspace=server
 - Ports drift: Vite is on 5175 (5173/5174 occupied)
 - Docker: use `docker-compose` (v1), not `docker compose` (v2)
 
+## Deployment
+
+**Netlify site:** https://beautiful-tarsier-f259a0.netlify.app
+**GitHub:** https://github.com/unsshub/Home-dealer
+
+### Env vars already set in Netlify:
+- `DATABASE_URL` — Neon connection string
+- `NODE_ENV` = `production`
+- `SESSION_SECRET` — random hex string
+- `CLIENT_URL` = `https://beautiful-tarsier-f259a0.netlify.app`
+
+### Env vars still needed (set in Netlify UI):
+1. **`OPENAI_API_KEY`** — Get from https://platform.openai.com/api-keys (free credits available)
+2. **`STRIPE_SECRET_KEY`** — `sk_test_...` from Stripe dashboard
+3. **`STRIPE_WEBHOOK_SECRET`** — `whsec_...` from Stripe CLI
+4. **`STRIPE_PRICE_STARTER`** — Stripe price ID for $19/mo plan
+5. **`STRIPE_PRICE_PRO`** — Stripe price ID for $49/mo plan
+6. **`STRIPE_PRICE_LIFETIME`** — Stripe price ID for lifetime plan
+
+### Steps to finish deployment:
+1. Set the missing env vars in Netlify dashboard (Site settings → Environment variables)
+2. Trigger a re-deploy (Deploys → Trigger deploy → Clear cache and deploy site)
+3. After deploy, configure Stripe webhook endpoint at `https://beautiful-tarsier-f259a0.netlify.app/api/webhooks/stripe`
+
+### Database (Neon)
+- Already created and migrated
+- Connection: `postgresql://neondb_owner:npg_iV7ouBzO5nWL@ep-dawn-feather-apjyeq3e-pooler.c-7.us-east-1.aws.neon.tech/neondb?sslmode=require`
+- Tables: users, analyses, subscription_plans, subscriptions, session
+- Plans seeded: Free, Starter ($19/mo), Pro ($49/mo), Lifetime
+
 ## Next Steps (pick one)
-1. **Deployment** — Dockerfile for server, Neon production DB, Vercel/Railway for client
-2. **Google OAuth** — Additional Passport.js strategy for social login
-3. **Stripe end-to-end test** — Verify recurring checkout, webhook, subscription state transitions
-4. **UI enhancements** — Page transitions, sidebar nav, loading skeletons
+1. **Add OpenAI key** — enables property scraping from Zillow URLs (blocker for core flow)
+2. **Add Stripe keys** — enables subscription/payment features
+3. **Manual property input** — skip OpenAI entirely, let users type property details
+4. **Google OAuth** — Additional Passport.js strategy for social login
 5. **Multi-strategy UI** — Let users pick Buy & Hold / BRRRR / Fix & Flip / Short-Term Rental on AnalyzePage
