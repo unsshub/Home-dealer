@@ -18,6 +18,7 @@
     --positive-bg: #dcfce7;
     --negative-bg: #fee2e2;
     --caution-bg: #fef9c3;
+    --muted-bg: #e8e4dc;
 
     --radius-sm: 0.25rem;
     --radius-md: 0.375rem;
@@ -36,8 +37,9 @@
   --color-primary-foreground: #ffffff;
   --color-secondary: var(--navy-mid);
   --color-secondary-foreground: #ffffff;
-  --color-muted: oklch(0.87 0.01 85);
+  --color-muted: var(--muted-bg);
   --color-muted-foreground: var(--ink-muted);
+  --color-ink-subtle: var(--ink-subtle);
   --color-accent: var(--gold);
   --color-accent-foreground: var(--navy);
   --color-destructive: var(--negative);
