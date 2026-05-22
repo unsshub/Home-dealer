@@ -37,6 +37,8 @@ describe('fixAndFlipCalculate', () => {
     expect(result.flipMetrics!.netProceeds).toBeCloseTo(257600, 0);
     expect(result.flipMetrics!.grossProfit).toBeCloseTo(17600, 0);
     expect(result.flipMetrics!.roi).toBeCloseTo(7.33, 1);
+    // annualizedRoi = (1 + 0.07333)^(12/6) - 1 = 1.152 - 1 ≈ 0.152 = 15.2%
+    expect(result.flipMetrics!.annualizedRoi).toBeCloseTo(15.2, 0);
   });
 
   it('returns DSCR alongside flip metrics', () => {
@@ -54,6 +56,8 @@ describe('fixAndFlipCalculate', () => {
     }));
     expect(result.flipMetrics!.grossProfit).toBeLessThan(0);
     expect(result.flipMetrics!.roi).toBeLessThan(0);
+    // roi = -16.9%, holdingPeriod=6mo, annualizedRoi = -30.95%
+    expect(result.flipMetrics!.annualizedRoi).toBeCloseTo(-30.9, 0);
   });
 
   it('handles zero or missing strategy-specific fields', () => {
@@ -67,5 +71,7 @@ describe('fixAndFlipCalculate', () => {
     expect(result.flipMetrics!.totalInvestment).toBe(200000); // price + 0
     expect(result.flipMetrics!.netProceeds).toBe(0); // 0 * (1 - 0.08)
     expect(result.flipMetrics!.grossProfit).toBe(-200000);
+    // roi = -100, which triggers the roi > -100 guard → annualizedRoi = -100
+    expect(result.flipMetrics!.annualizedRoi).toBe(-100);
   });
 });
