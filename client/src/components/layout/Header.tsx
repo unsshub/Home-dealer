@@ -1,6 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/use-auth';
-import { Button } from '../ui/button';
 
 export function Header() {
   const { user, logout } = useAuth();
@@ -18,7 +17,7 @@ export function Header() {
           DSCR Verdict
         </Link>
 
-        <nav className="flex items-center gap-4">
+        <nav aria-label="Primary" className="flex items-center gap-4">
           <Link
             to="/pricing"
             className="text-sm text-primary-foreground/70 hover:text-primary-foreground transition-colors"
@@ -34,10 +33,14 @@ export function Header() {
               >
                 Dashboard
               </Link>
-              <Link to="/analyze">
-                <Button size="sm" variant="primary">New Analysis</Button>
+              <Link
+                to="/analyze"
+                className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 h-8 px-3 text-xs font-medium transition-colors"
+              >
+                New Analysis
               </Link>
               <button
+                type="button"
                 onClick={handleLogout}
                 className="text-sm text-primary-foreground/70 hover:text-primary-foreground transition-colors"
               >
@@ -52,8 +55,11 @@ export function Header() {
               >
                 Login
               </Link>
-              <Link to="/register">
-                <Button size="sm" variant="primary">Sign Up</Button>
+              <Link
+                to="/register"
+                className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 h-8 px-3 text-xs font-medium transition-colors"
+              >
+                Sign Up
               </Link>
             </>
           )}
