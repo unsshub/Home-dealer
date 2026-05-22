@@ -7,6 +7,7 @@ interface ErrorAlertProps {
 }
 
 export function ErrorAlert({ message, className, onRetry }: ErrorAlertProps) {
+  const lines = message.split('\n');
   return (
     <div
       className={cn(
@@ -14,12 +15,16 @@ export function ErrorAlert({ message, className, onRetry }: ErrorAlertProps) {
         className
       )}
     >
-      <div className="flex items-center justify-between">
-        <span>{message}</span>
+      <div className="flex items-start justify-between gap-2">
+        <div>
+          {lines.map((line, i) => (
+            <p key={i}>{line}</p>
+          ))}
+        </div>
         {onRetry && (
           <button
             onClick={onRetry}
-            className="ml-4 text-xs font-medium underline hover:no-underline"
+            className="shrink-0 text-xs font-medium underline hover:no-underline"
           >
             Retry
           </button>

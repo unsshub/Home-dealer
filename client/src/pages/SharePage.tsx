@@ -54,7 +54,7 @@ export function SharePage() {
         </CardContent>
       </Card>
 
-      <div className={cn('rounded-xl border-2 p-6 text-center mb-6', vc.variant === 'success' && 'border-success/40 bg-success/5', vc.variant === 'warning' && 'border-warning/40 bg-warning/5', vc.variant === 'danger' && 'border-danger/40 bg-danger/5')}>
+      <div className={cn('rounded-lg border-2 p-6 text-center mb-6', vc.variant === 'success' && 'border-success/40 bg-success/5', vc.variant === 'warning' && 'border-warning/40 bg-warning/5', vc.variant === 'danger' && 'border-danger/40 bg-danger/5')}>
         <p className="text-5xl font-bold tabular-nums">{data.dscrRatio.toFixed(2)}x</p>
         <div className="mt-2">
           <Badge variant={vc.variant}>{vc.label}</Badge>
