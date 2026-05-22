@@ -1,0 +1,158 @@
+<h2>Navy &amp; Gold — AnalyzePage Mockup</h2>
+<p class="subtitle">Key components rendered with the new visual language</p>
+
+<style>
+  .mock-app { max-width:720px; margin:0 auto; font-family:system-ui,sans-serif; }
+  .mock-nav { background:#1a2332; color:#e8e4dc; padding:12px 24px; display:flex; justify-content:space-between; align-items:center; font-size:14px; border-bottom:2px solid #d4a843; }
+  .mock-nav-brand { font-family:Georgia,serif; font-size:18px; font-weight:700; color:#d4a843; letter-spacing:-0.5px; }
+  .mock-page { background:#f5f3ef; padding:24px; }
+  h1 { font-family:Georgia,serif; font-size:24px; font-weight:700; color:#1a2332; margin:0 0 4px 0; letter-spacing:-0.3px; }
+  .subhead { font-size:14px; color:#6b7280; margin:0 0 20px 0; }
+  .header-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px; }
+  .pill-group { display:inline-flex; border:1px solid #d4d0c8; border-radius:6px; background:#e8e4dc; padding:2px; }
+  .pill { padding:6px 14px; border-radius:4px; font-size:13px; font-weight:500; color:#6b7280; cursor:pointer; }
+  .pill.active { background:#ffffff; color:#1a2332; box-shadow:0 1px 2px rgba(0,0,0,0.06); }
+  .strategy-select { display:inline-flex; align-items:center; gap:6px; border:1px solid #d4d0c8; border-radius:6px; padding:6px 12px; font-size:13px; color:#1c1c1e; background:#ffffff; }
+  .mock-card { background:#ffffff; border:1px solid #e0dcd5; border-radius:8px; padding:20px; margin-bottom:16px; }
+  .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .form-group { display:flex; flex-direction:column; gap:4px; }
+  .form-label { font-size:12px; font-weight:600; color:#4b5563; text-transform:uppercase; letter-spacing:0.5px; }
+  .form-input { border:1px solid #d4d0c8; border-radius:6px; padding:8px 12px; font-size:14px; background:#ffffff; color:#1c1c1e; }
+  .form-input:focus { outline:none; border-color:#d4a843; box-shadow:0 0 0 2px rgba(212,168,67,0.15); }
+  .params-bar { display:flex; gap:12px; align-items:end; border-top:1px solid #e0dcd5; padding-top:16px; margin-top:16px; }
+  .params-bar .form-group { flex:1; }
+  .btn-primary { background:#1a2332; color:#ffffff; border:none; border-radius:6px; padding:8px 20px; font-size:14px; font-weight:500; cursor:pointer; white-space:nowrap; }
+  .btn-primary:hover { background:#2c3e5c; }
+  .verdict-hero { display:flex; align-items:center; gap:20px; }
+  .ratio { font-family:Georgia,serif; font-size:42px; font-weight:700; color:#1a2332; line-height:1; border-bottom:3px solid #d4a843; display:inline-block; padding-bottom:4px; }
+  .badge { display:inline-block; padding:2px 10px; border-radius:4px; font-size:12px; font-weight:600; margin-top:8px; }
+  .badge-pass { background:#dcfce7; color:#166534; }
+  .badge-caution { background:#fef9c3; color:#854d0e; }
+  .badge-fail { background:#fee2e2; color:#991b1b; }
+  .verdict-legend { font-size:11px; color:#9ca3af; line-height:1.6; text-align:right; }
+  .metric-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:16px; }
+  .metric { }
+  .metric-label { font-size:11px; font-weight:600; color:#6b7280; text-transform:uppercase; letter-spacing:0.4px; }
+  .metric-value { font-family:'Courier New',monospace; font-size:18px; font-weight:600; color:#1c1c1e; margin-top:4px; }
+  .metric-value.positive { color:#16a34a; }
+  .metric-value.negative { color:#dc2626; }
+  .section-title { font-size:11px; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:0.8px; margin:0 0 12px 0; }
+  .breakdown-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:8px 24px; }
+  .breakdown-row { display:flex; justify-content:space-between; padding:4px 0; font-size:13px; border-bottom:1px solid #f3f1ed; }
+  .breakdown-row.total { border-top:2px solid #1a2332; border-bottom:none; margin-top:4px; padding-top:8px; font-weight:700; }
+  .thin-rule { border:none; border-top:1px solid #e0dcd5; margin:16px 0; }
+  .btn-secondary { background:transparent; color:#1a2332; border:1px solid #d4d0c8; border-radius:6px; padding:8px 16px; font-size:13px; font-weight:500; cursor:pointer; width:100%; }
+  .btn-secondary:hover { background:#f5f3ef; }
+</style>
+
+<div class="mock-app">
+  <div class="mock-nav">
+    <div class="mock-nav-brand">DSCR Verdict</div>
+    <div style="display:flex;gap:16px;align-items:center;">
+      <span>Dashboard</span>
+      <span style="color:#d4a843;font-weight:600;">Analyze</span>
+      <span style="background:#2c3e5c;border-radius:4px;padding:4px 10px;font-size:12px;">Sign Out</span>
+    </div>
+  </div>
+
+  <div class="mock-page">
+    <div class="header-row">
+      <div>
+        <h1>New Analysis</h1>
+        <p class="subhead">Get a lender-grade DSCR verdict for any US rental property</p>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center;">
+        <div class="pill-group">
+          <span class="pill active">URL</span>
+          <span class="pill">Manual</span>
+        </div>
+        <div class="strategy-select">
+          Buy &amp; Hold
+          <span style="color:#9ca3af;">▼</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mock-card">
+      <div style="margin-bottom:12px;">
+        <div class="form-group">
+          <span class="form-label">Property Listing URL</span>
+          <input class="form-input" placeholder="https://www.zillow.com/homedetails/..." style="width:100%;" />
+        </div>
+      </div>
+
+      <hr class="thin-rule" />
+
+      <div class="params-bar">
+        <div class="form-group">
+          <span class="form-label">Down Payment</span>
+          <input class="form-input" value="20" />
+        </div>
+        <div class="form-group">
+          <span class="form-label">Interest Rate</span>
+          <input class="form-input" value="6.5" />
+        </div>
+        <div class="form-group">
+          <span class="form-label">Loan Term</span>
+          <input class="form-input" value="30" />
+        </div>
+        <button class="btn-primary">Analyze</button>
+      </div>
+    </div>
+
+    <!-- Result mockup -->
+    <div class="mock-card">
+      <div style="display:flex;justify-content:space-between;align-items:start;">
+        <div>
+          <div style="font-size:14px;font-weight:600;color:#1c1c1e;">123 Main St, Austin, TX 78701</div>
+          <div style="display:flex;gap:12px;font-size:13px;color:#6b7280;margin-top:4px;">
+            <span>$300,000</span><span>3bd</span><span>2ba</span><span>1,400 sqft</span>
+          </div>
+        </div>
+        <button style="background:none;border:1px solid #d4d0c8;border-radius:4px;padding:4px 10px;font-size:12px;cursor:pointer;">New</button>
+      </div>
+    </div>
+
+    <div class="mock-card">
+      <div class="verdict-hero">
+        <div>
+          <div class="ratio">1.32x</div>
+          <div style="margin-top:8px;display:flex;gap:8px;align-items:center;">
+            <span class="badge badge-pass">PASS</span>
+            <span style="font-size:11px;color:#9ca3af;">DSCR ≥ 1.25</span>
+          </div>
+        </div>
+        <div class="verdict-legend">
+          <div>Pass ≥ 1.25</div>
+          <div>Caution 1.0–1.25</div>
+          <div>Fail &lt; 1.0</div>
+        </div>
+      </div>
+
+      <div class="metric-grid">
+        <div class="metric">
+          <div class="metric-label">Gross Rent</div>
+          <div class="metric-value">$36,000</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">NOI</div>
+          <div class="metric-value">$22,800</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Debt Service</div>
+          <div class="metric-value negative">$17,280</div>
+        </div>
+      </div>
+
+      <hr class="thin-rule" />
+
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div class="metric-label" style="font-size:11px;">DSCR</div>
+          <div style="font-family:Georgia,serif;font-size:24px;font-weight:700;color:#1a2332;">1.32x</div>
+        </div>
+        <button class="btn-secondary" style="width:auto;">View Full Breakdown</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -61,3 +61,19 @@ authRoutes.post('/auth/logout', (req, res, next) => {
 authRoutes.get('/auth/me', requireAuth, (req, res) => {
   res.json({ id: req.user!.id, email: req.user!.email });
 });
+
+const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5175';
+
+if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+  authRoutes.get('/auth/google', passport.authenticate('google', {
+    scope: ['profile', 'email'],
+  }));
+
+  authRoutes.get(
+    '/auth/google/callback',
+    passport.authenticate('google', {
+      successRedirect: `${CLIENT_URL}/dashboard`,
+      failureRedirect: `${CLIENT_URL}/login?error=google_auth_failed`,
+    })
+  );
+}

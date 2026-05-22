@@ -3,7 +3,6 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { useParams, Link } from 'react-router-dom';
 import { api } from '../lib/api';
 import { Card, CardContent } from '../components/ui/card';
-import { cn } from '../lib/utils';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { LoadingSpinner } from '../components/ui/loading-spinner';
@@ -15,11 +14,30 @@ interface AnalysisDetail {
   property: { address: string; price: number; bedrooms: number | null; bathrooms: number | null; sqft: number | null; estimatedRent: number; hoa: number };
 }
 
-function LineItem({ label, value, isBold }: { label: string; value: string; isBold?: boolean }) {
+interface LineItemProps {
+  label: string; value: string; bold?: boolean; total?: boolean; indent?: boolean;
+}
+
+function LineItem({ label, value, bold, total, indent }: LineItemProps) {
   return (
-    <div className="flex justify-between py-1 text-sm">
-      <span className={isBold ? 'font-medium' : 'text-muted-foreground'}>{label}</span>
-      <span className={isBold ? 'font-medium tabular-nums' : 'tabular-nums'}>{value}</span>
+    <div className={`flex justify-between py-1.5 text-sm ${total ? 'border-t border-border pt-2 mt-1' : ''} ${indent ? 'pl-4' : ''}`}>
+      <span className={bold ? 'font-semibold text-foreground' : 'text-muted-foreground'}>{label}</span>
+      <span className={`tabular-nums ${bold ? 'font-semibold' : ''}`}>{value}</span>
+    </div>
+  );
+}
+
+const VERDICT_STYLES: Record<string, { label: string; badgeVariant: 'success' | 'warning' | 'danger' }> = {
+  pass:    { label: 'PASS',    badgeVariant: 'success' },
+  caution: { label: 'CAUTION', badgeVariant: 'warning' },
+  fail:    { label: 'FAIL',   badgeVariant: 'danger' },
+};
+
+function MetricBox({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <p className="text-xs text-muted-foreground">{label}</p>
+      <p className="text-sm font-semibold tabular-nums">{value}</p>
     </div>
   );
 }
@@ -45,9 +63,9 @@ export function AnalysisDetailPage() {
   if (isLoading) return <LoadingSpinner size="lg" label="Loading analysis..." className="mt-32" />;
   if (error || !data) {
     return (
-      <div className="mx-auto mt-10 max-w-2xl px-4">
+      <div className="mx-auto mt-10 max-w-3xl px-4">
         <ErrorAlert message="Analysis not found" />
-        <Link to="/dashboard" className="mt-4 inline-block text-sm text-muted-foreground hover:text-foreground">
+        <Link to="/dashboard" className="mt-4 inline-block text-sm text-muted-foreground hover:text-foreground transition-colors">
           &larr; Back to Dashboard
         </Link>
       </div>
@@ -55,83 +73,114 @@ export function AnalysisDetailPage() {
   }
 
   const b = data.breakdown;
-  const verdictConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' }> = {
-    pass: { label: 'PASS', variant: 'success' },
-    caution: { label: 'CAUTION', variant: 'warning' },
-    fail: { label: 'FAIL', variant: 'danger' },
-  };
-  const vc = verdictConfig[data.verdict] ?? verdictConfig.fail;
+  const vc = VERDICT_STYLES[data.verdict] ?? VERDICT_STYLES.fail;
+  const formattedDate = new Date(data.createdAt).toLocaleDateString('en-US', {
+    year: 'numeric', month: 'short', day: 'numeric',
+  });
 
   return (
-    <div className="mx-auto mt-10 max-w-2xl px-4 pb-20">
-      <Link to="/dashboard" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-        &larr; Back to Dashboard
+    <div className="mx-auto mt-8 max-w-3xl px-4 pb-24">
+      <Link to="/dashboard" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
+        <span aria-hidden="true">&larr;</span> Dashboard
       </Link>
 
-      <div className="mt-4 mb-6">
-        <h1 className="text-xl font-bold">{data.property.address}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          ${data.property.price.toLocaleString()} &middot; {data.property.bedrooms ?? '?'}bd{' '}
-          {data.property.bathrooms ?? '?'}ba &middot; {data.property.sqft?.toLocaleString() ?? '?'} sqft &middot;{' '}
-          {data.strategy.replace(/_/g, ' ')}
-        </p>
-        <p className="text-xs text-muted-foreground mt-1">{new Date(data.createdAt).toLocaleDateString()}</p>
-      </div>
-
-      <div className="flex gap-2 mb-6">
-        <Button
-          variant="secondary"
-          className="flex-1"
-          onClick={() => shareMutation.mutate()}
-          disabled={shareMutation.isPending}
-        >
-          {shareUrl ? 'Link Copied!' : shareMutation.isPending ? 'Creating...' : 'Share Link'}
-        </Button>
-        <Button variant="secondary" className="flex-1" onClick={() => window.print()}>
-          Print / PDF
-        </Button>
-      </div>
-
-      <div className={cn('rounded-xl border-2 p-6 text-center mb-8', vc.variant === 'success' && 'border-success/40 bg-success/5', vc.variant === 'warning' && 'border-warning/40 bg-warning/5', vc.variant === 'danger' && 'border-danger/40 bg-danger/5')}>
-        <p className="text-5xl font-bold tabular-nums">{data.dscrRatio.toFixed(2)}x</p>
-        <div className="mt-2">
-          <Badge variant={vc.variant}>{vc.label}</Badge>
+      <div className="mt-6 rounded-lg border border-border bg-card p-6">
+        <div className="flex items-center gap-6">
+          <div className="flex-1">
+            <p className="font-serif text-5xl font-bold tabular-nums tracking-tight text-foreground border-b-[3px] border-accent inline-block pb-1">
+              {data.dscrRatio.toFixed(2)}<span className="text-2xl font-normal opacity-60">x</span>
+            </p>
+            <div className="mt-3 flex items-center gap-2">
+              <Badge variant={vc.badgeVariant}>{vc.label}</Badge>
+            </div>
+          </div>
+          <div className="hidden sm:block text-right text-xs text-muted-foreground leading-relaxed">
+            <p>Pass ≥ 1.25</p>
+            <p>Caution 1.0–1.25</p>
+            <p>Fail &lt; 1.0</p>
+          </div>
         </div>
+        <p className="mt-4 text-xs text-muted-foreground max-w-md leading-relaxed">
+          {data.verdict === 'pass'
+            ? 'Strong lender-grade coverage. This property cash-flows with room to spare.'
+            : data.verdict === 'caution'
+            ? 'Breaks even but the margin is thin. Verify assumptions with your lender.'
+            : 'Does not cash-flow under these assumptions. Review your inputs or adjust terms.'}
+        </p>
       </div>
 
-      <Card>
-        <CardContent className="pt-6 space-y-0">
-          <p className="text-sm font-semibold mb-2">Income</p>
-          <LineItem label="Gross Rental Income" value={`+ $${b.grossRent.toLocaleString()}`} />
-          <LineItem label="Vacancy (5%)" value={`- $${Math.abs(b.vacancy).toLocaleString()}`} />
-          <div className="border-t border-border mt-1 pt-1">
-            <LineItem label="Effective Gross Income" value={`+ $${b.effectiveIncome.toLocaleString()}`} isBold />
+      <Card className="mt-6">
+        <CardContent className="pt-6">
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0">
+              <h1 className="text-xl font-bold truncate">{data.property.address}</h1>
+              <p className="mt-0.5 text-xs text-muted-foreground">{formattedDate} &middot; {data.strategy.replace(/_/g, ' ')}</p>
+            </div>
+            <div className="flex gap-2 shrink-0">
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => shareMutation.mutate()}
+                disabled={shareMutation.isPending}
+              >
+                {shareUrl ? 'Copied!' : shareMutation.isPending ? '...' : 'Share'}
+              </Button>
+              <Button variant="secondary" size="sm" onClick={() => window.print()}>
+                Print
+              </Button>
+            </div>
           </div>
 
-          <p className="text-sm font-semibold mt-4 mb-2">Operating Expenses</p>
-          <LineItem label="Operating Expenses (10%)" value={`- $${Math.abs(b.operatingExpenses).toLocaleString()}`} />
-          <LineItem label="Property Management (6%)" value={`- $${Math.abs(b.propertyManagement).toLocaleString()}`} />
-          <LineItem label="Repairs & Maintenance (5%)" value={`- $${Math.abs(b.repairs).toLocaleString()}`} />
-          <LineItem label="CapEx Reserve (3%)" value={`- $${Math.abs(b.capex).toLocaleString()}`} />
-          <div className="border-t border-border mt-1 pt-1">
-            <LineItem label="Net Operating Income" value={`+ $${b.noi.toLocaleString()}`} isBold />
+          <div className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-4 border-t border-border pt-4">
+            <MetricBox label="Purchase Price" value={`$${data.property.price.toLocaleString()}`} />
+            <MetricBox label="Property" value={`${data.property.bedrooms ?? '?'}bd ${data.property.bathrooms ?? '?'}ba`} />
+            <MetricBox label="Square Feet" value={data.property.sqft ? `${data.property.sqft.toLocaleString()}` : '—'} />
+            <MetricBox label="Est. Rent /mo" value={`$${data.property.estimatedRent.toLocaleString()}`} />
+          </div>
+          <div className="grid grid-cols-2 gap-4 mt-2">
+            <MetricBox label="Monthly HOA" value={`$${data.property.hoa.toLocaleString()}`} />
+            <MetricBox label="Analysis ID" value={data.id.slice(0, 8)} />
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="mt-6">
+        <CardContent className="pt-6">
+          <div className="space-y-2">
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Income</p>
+            <LineItem label="Gross Rental Income" value={`+ $${b.grossRent.toLocaleString()}`} />
+            <LineItem label="Vacancy Allowance (5%)" value={`− $${Math.abs(b.vacancy).toLocaleString()}`} indent />
+            <LineItem label="Effective Gross Income" value={`$${b.effectiveIncome.toLocaleString()}`} bold total />
           </div>
 
-          <p className="text-sm font-semibold mt-4 mb-2">Debt Service</p>
-          <LineItem label="Principal & Interest" value={`- $${Math.abs(b.principalInterest).toLocaleString()}`} />
-          <LineItem label="Property Taxes" value={`- $${Math.abs(b.propertyTax).toLocaleString()}`} />
-          <LineItem label="Insurance" value={`- $${Math.abs(b.insurance).toLocaleString()}`} />
-          <LineItem label="HOA" value={`- $${Math.abs(b.hoaExpense).toLocaleString()}`} />
-          <div className="border-t border-border mt-1 pt-1">
-            <LineItem label="Total Debt Service" value={`- $${b.totalDebtService.toLocaleString()}`} isBold />
+          <div className="mt-6 space-y-2">
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Operating Expenses</p>
+            <LineItem label="Operating Expenses (10%)" value={`− $${Math.abs(b.operatingExpenses).toLocaleString()}`} />
+            <LineItem label="Property Management (6%)" value={`− $${Math.abs(b.propertyManagement).toLocaleString()}`} indent />
+            <LineItem label="Repairs & Maintenance (5%)" value={`− $${Math.abs(b.repairs).toLocaleString()}`} indent />
+            <LineItem label="CapEx Reserve (3%)" value={`− $${Math.abs(b.capex).toLocaleString()}`} indent />
+            <LineItem label="Net Operating Income" value={`$${b.noi.toLocaleString()}`} bold total />
           </div>
 
-          <div className="border-t-2 border-border mt-3 pt-3">
-            <LineItem
-              label="Debt Service Coverage Ratio"
-              value={`${data.dscrRatio.toFixed(3)}x`}
-              isBold
-            />
+          <div className="mt-6 space-y-2">
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Debt Service</p>
+            <LineItem label="Principal & Interest" value={`− $${Math.abs(b.principalInterest).toLocaleString()}`} />
+            <LineItem label="Property Taxes" value={`− $${Math.abs(b.propertyTax).toLocaleString()}`} indent />
+            <LineItem label="Insurance" value={`− $${Math.abs(b.insurance).toLocaleString()}`} indent />
+            <LineItem label="HOA" value={`− $${Math.abs(b.hoaExpense).toLocaleString()}`} indent />
+            <LineItem label="Total Debt Service" value={`$${b.totalDebtService.toLocaleString()}`} bold total />
+          </div>
+
+          <div className="mt-8 rounded-lg border border-border bg-card p-5">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-semibold text-foreground">Debt Service Coverage Ratio</p>
+                <p className="text-xs text-muted-foreground mt-0.5">Net operating income &divide; total debt service</p>
+              </div>
+              <p className={`font-serif text-2xl font-bold tabular-nums text-foreground`}>
+                {data.dscrRatio.toFixed(3)}x
+              </p>
+            </div>
           </div>
         </CardContent>
       </Card>

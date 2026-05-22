@@ -1,7 +1,10 @@
 const BASE = '/api';
 
 class ApiError extends Error {
-  constructor(public status: number, public body: { error?: string; code?: string }) {
+  constructor(
+    public status: number,
+    public body: { error?: string; code?: string; details?: Record<string, string[]> }
+  ) {
     super(body.error ?? 'API Error');
   }
 }

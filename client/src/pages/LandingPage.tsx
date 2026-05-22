@@ -32,7 +32,7 @@ export function LandingPage() {
 
       <div className="mt-24 grid gap-6 sm:grid-cols-3 text-left">
         {FEATURES.map((f) => (
-          <div key={f.title} className="rounded-xl border border-border bg-card p-5">
+          <div key={f.title} className="rounded-lg border border-border bg-card p-5">
             <h3 className="font-semibold">{f.title}</h3>
             <p className="mt-1.5 text-sm text-muted-foreground">{f.body}</p>
           </div>
