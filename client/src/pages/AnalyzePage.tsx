@@ -215,7 +215,7 @@ export function AnalyzePage() {
       <div className="mb-6 flex gap-2">
         <button
           type="button"
-          onClick={() => { setMode('url'); setResult(null); setError(''); }}
+          onClick={() => { setMode('url'); setResult(null); setError(''); setStrategy('buy_and_hold'); }}
           className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
             mode === 'url'
               ? 'bg-primary text-primary-foreground'
@@ -250,6 +250,21 @@ export function AnalyzePage() {
                 placeholder="https://www.zillow.com/homedetails/..."
                 required
               />
+              <div className="space-y-1.5">
+                <label htmlFor="strategy-url" className="text-sm font-medium text-foreground">
+                  Investment Strategy
+                </label>
+                <select
+                  id="strategy-url"
+                  value={strategy}
+                  onChange={(e) => setStrategy(e.target.value as Strategy)}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  {STRATEGIES.map((s) => (
+                    <option key={s.value} value={s.value}>{s.label}</option>
+                  ))}
+                </select>
+              </div>
               {error && <ErrorAlert message={error} />}
               <Button type="submit" disabled={loading} className="w-full">
                 {loading ? 'Analyzing...' : 'Analyze Property'}
