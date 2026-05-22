@@ -51,6 +51,13 @@ interface AnalysisResult {
     address: string; price: number; bedrooms: number;
     bathrooms: number; sqft: number; estimatedRent: number; hoa: number;
   };
+  flipMetrics?: {
+    totalInvestment: number;
+    netProceeds: number;
+    grossProfit: number;
+    roi: number;
+    annualizedRoi: number;
+  };
 }
 
 const PROPERTY_TYPES = [
@@ -572,6 +579,49 @@ export function AnalyzePage() {
                 DSCR &ge; 1.25 Pass &middot; 1.0&ndash;1.25 Caution &middot; &lt;1.0 Fail
               </p>
             </div>
+
+            {result.flipMetrics && (
+              <Card>
+                <CardContent className="pt-6 space-y-3">
+                  <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                    Flip Profit Analysis
+                  </h3>
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div>
+                      <span className="text-muted-foreground">Total Investment</span>
+                      <p className="font-medium tabular-nums">
+                        ${result.flipMetrics.totalInvestment.toLocaleString()}
+                      </p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Net Proceeds</span>
+                      <p className="font-medium tabular-nums">
+                        ${result.flipMetrics.netProceeds.toLocaleString()}
+                      </p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Gross Profit</span>
+                      <p className={`font-medium tabular-nums ${result.flipMetrics.grossProfit >= 0 ? 'text-success' : 'text-danger'}`}>
+                        {result.flipMetrics.grossProfit >= 0 ? '+' : ''}
+                        ${Math.abs(result.flipMetrics.grossProfit).toLocaleString()}
+                      </p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Total ROI</span>
+                      <p className={`font-medium tabular-nums ${result.flipMetrics.roi >= 0 ? 'text-success' : 'text-danger'}`}>
+                        {result.flipMetrics.roi.toFixed(1)}%
+                      </p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Annualized ROI</span>
+                      <p className={`font-medium tabular-nums ${result.flipMetrics.annualizedRoi >= 0 ? 'text-success' : 'text-danger'}`}>
+                        {result.flipMetrics.annualizedRoi.toFixed(1)}%
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             <Button
               variant="secondary"
