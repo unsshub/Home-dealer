@@ -1,4 +1,8 @@
+import crypto from 'node:crypto';
 import OpenAI from 'openai';
+import { eq } from 'drizzle-orm';
+import { db } from '../db/index.js';
+import { pageCache } from '../db/schema/page_cache.js';
 import type { ScrapeResult, PropertyData, PropertyType } from '@dscr/shared';
 
 const SYSTEM_PROMPT = `You extract US real estate data from listing URLs. Return ONLY valid JSON with:
@@ -26,6 +30,34 @@ export class ScrapingService {
   }
 
   async scrape(url: string): Promise<ScrapeResult> {
+    const cacheKey = crypto.createHash('sha256').update(url).digest('hex');
+
+    const [cached] = await db
+      .select()
+      .from(pageCache)
+      .where(eq(pageCache.cacheKey, cacheKey))
+      .limit(1);
+
+    if (cached) {
+      const age = Date.now() - new Date(cached.createdAt).getTime();
+      if (age < cached.ttlSeconds * 1000) {
+        return cached.resultData as ScrapeResult;
+      }
+      await db.delete(pageCache).where(eq(pageCache.cacheKey, cacheKey));
+    }
+
+    const result = await this._doScrape(url);
+
+    try {
+      await db.insert(pageCache).values({ cacheKey, resultData: result });
+    } catch {
+      // Cache insertion failure is non-fatal
+    }
+
+    return result;
+  }
+
+  private async _doScrape(url: string): Promise<ScrapeResult> {
     const response = await this.openai.chat.completions.create({
       model: 'gpt-4o-mini',
       messages: [
