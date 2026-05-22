@@ -1,4 +1,4 @@
-import type { Strategy, Verdict, DSCRBreakdown, AnalysisParams } from './analysis';
+import type { Strategy, Verdict, DSCRBreakdown, FlipMetrics, AnalysisParams } from './analysis';
 import type { PropertyData } from './property';
 
 export interface AnalyzeRequest {
@@ -16,6 +16,7 @@ export interface AnalyzeResponse {
   verdict: Verdict;
   breakdown: DSCRBreakdown;
   createdAt: string;
+  flipMetrics?: FlipMetrics;
 }
 
 export interface ApiError {

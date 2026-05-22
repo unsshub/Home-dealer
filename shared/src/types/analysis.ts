@@ -16,6 +16,19 @@ export interface DSCRInput {
   propertyManagementRate: number;
   repairsRate: number;
   capexRate: number;
+  // BRRRR & Fix & Flip
+  afterRepairValue?: number;
+  // Fix & Flip only
+  rehabCosts?: number;
+  holdingPeriodMonths?: number;
+  sellingCostsPercent?: number;
+  // STR only
+  peakMonthlyRent?: number;
+  offPeakMonthlyRent?: number;
+  peakMonths?: number;
+  bookingFeePercent?: number;
+  cleaningCostPerBooking?: number;
+  monthlyUtilities?: number;
 }
 
 export interface DSCRBreakdown {
@@ -39,6 +52,15 @@ export interface DSCRResult {
   verdict: Verdict;
   breakdown: DSCRBreakdown;
   input: DSCRInput;
+  flipMetrics?: FlipMetrics;
+}
+
+export interface FlipMetrics {
+  totalInvestment: number;
+  netProceeds: number;
+  grossProfit: number;
+  roi: number;
+  annualizedRoi: number;
 }
 
 export interface AnalysisParams {
