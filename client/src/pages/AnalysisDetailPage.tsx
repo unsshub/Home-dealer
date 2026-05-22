@@ -27,10 +27,10 @@ function LineItem({ label, value, bold, total, indent }: LineItemProps) {
   );
 }
 
-const VERDICT_STYLES: Record<string, { label: string; bg: string; border: string; text: string; badgeVariant: 'success' | 'warning' | 'danger' }> = {
-  pass:    { label: 'PASS', bg: 'bg-success/8', border: 'border-success/25', text: 'text-success', badgeVariant: 'success' },
-  caution: { label: 'CAUTION', bg: 'bg-warning/8', border: 'border-warning/25', text: 'text-warning', badgeVariant: 'warning' },
-  fail:    { label: 'FAIL', bg: 'bg-danger/8', border: 'border-danger/25', text: 'text-danger', badgeVariant: 'danger' },
+const VERDICT_STYLES: Record<string, { label: string; badgeVariant: 'success' | 'warning' | 'danger' }> = {
+  pass:    { label: 'PASS',    badgeVariant: 'success' },
+  caution: { label: 'CAUTION', badgeVariant: 'warning' },
+  fail:    { label: 'FAIL',   badgeVariant: 'danger' },
 };
 
 function MetricBox({ label, value }: { label: string; value: string }) {
@@ -157,14 +157,14 @@ export function AnalysisDetailPage() {
             <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Operating Expenses</p>
             <LineItem label="Operating Expenses (10%)" value={`− $${Math.abs(b.operatingExpenses).toLocaleString()}`} />
             <LineItem label="Property Management (6%)" value={`− $${Math.abs(b.propertyManagement).toLocaleString()}`} indent />
-            <LineItem label="Repairs &amp; Maintenance (5%)" value={`− $${Math.abs(b.repairs).toLocaleString()}`} indent />
+            <LineItem label="Repairs & Maintenance (5%)" value={`− $${Math.abs(b.repairs).toLocaleString()}`} indent />
             <LineItem label="CapEx Reserve (3%)" value={`− $${Math.abs(b.capex).toLocaleString()}`} indent />
             <LineItem label="Net Operating Income" value={`$${b.noi.toLocaleString()}`} bold total />
           </div>
 
           <div className="mt-6 space-y-2">
             <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Debt Service</p>
-            <LineItem label="Principal &amp; Interest" value={`− $${Math.abs(b.principalInterest).toLocaleString()}`} />
+            <LineItem label="Principal & Interest" value={`− $${Math.abs(b.principalInterest).toLocaleString()}`} />
             <LineItem label="Property Taxes" value={`− $${Math.abs(b.propertyTax).toLocaleString()}`} indent />
             <LineItem label="Insurance" value={`− $${Math.abs(b.insurance).toLocaleString()}`} indent />
             <LineItem label="HOA" value={`− $${Math.abs(b.hoaExpense).toLocaleString()}`} indent />
