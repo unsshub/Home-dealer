@@ -1,4 +1,4 @@
-import type { DSCRInput, DSCRResult } from '@dscr/shared';
+import type { DSCRInput, DSCRResult, DSCRBreakdown } from '@dscr/shared';
 import { getVerdict } from '@dscr/shared';
 
 function monthlyPayment(principal: number, annualRate: number, termYears: number): number {
@@ -46,7 +46,7 @@ export function strCalculate(input: DSCRInput): DSCRResult {
 
   const dscrRatio = totalDebtService > 0 ? Math.round((noi / totalDebtService) * 1000) / 1000 : 0;
 
-  const breakdown = {
+  const breakdown: DSCRBreakdown = {
     grossRent: Math.round(blendedIncome * 100) / 100,
     vacancy: -Math.round(vacancy * 100) / 100,
     effectiveIncome: Math.round(effectiveIncome * 100) / 100,
