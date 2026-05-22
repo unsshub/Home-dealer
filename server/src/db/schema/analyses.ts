@@ -24,5 +24,6 @@ export const analyses = pgTable('analyses', {
   downPaymentPct: numeric('down_payment_pct', { precision: 5, scale: 2 }),
   interestRate: numeric('interest_rate', { precision: 5, scale: 3 }),
   loanTermYears: integer('loan_term_years').default(30),
+  shareToken: text('share_token'),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 });

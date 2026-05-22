@@ -3,30 +3,32 @@
 ## Project: DSCR Verdict SaaS
 **Tagline**: Lender-grade DSCR verdict on any US rental property in seconds.
 
-## Current Status: ARCHITECT PHASE
-- [x] Requirements gathered
-- [ ] Workspace scaffold created
-- [ ] Sprint Pack delivered to Builder
-- [ ] Tracer Bullet test defined
-- [ ] Builder implementing first vertical slice
-- [ ] Quality gate passed
+## Current Status: BUILDER PHASE — ALL SLICES COMPLETE
+- [x] Slice 1: DSCR engine, scraping, POST /api/analyze (6 tests passing)
+- [x] Slice 2: Passport.js auth, register/login/logout, dashboard, detail page
+- [x] Slice 3: Share links (token-based), public share view, print/PDF
+- [x] Slice 4: Stripe checkout, webhooks, plan gating, subscription UI
+- [x] Frontend: Auth context, protected routes, all pages connected
+- [x] TypeScript clean on server and client
 
 ## Active Decisions Pending
-- None — awaiting Builder handoff.
+- None.
 
 ## Known Bugs
-- None (no code written yet).
+- None reported.
 
 ## System Status
 | Service     | Status  | Notes                        |
 |-------------|---------|------------------------------|
-| Neon/DB     | Not yet | Docker Compose not provisioned |
-| OpenAI API  | Not yet | Needs API key in .env        |
-| Stripe      | Not yet | Needs test keys in .env      |
-| Auth        | Not yet | Passport.js not configured   |
+| Neon/DB     | Needs `docker compose up -d` + `drizzle-kit push` to initialize |
+| OpenAI API  | Needs `OPENAI_API_KEY` in server/.env |
+| Stripe      | Needs keys + price IDs in server/.env |
+| Auth        | Configured via Passport.js local strategy |
+| Seed Data   | Run `npm run db:seed` to populate subscription_plans |
 
-## MVP Vertical Slices (Ordered)
-1. **Core DSCR Flow**: Paste URL → AI extracts → edit form → calculate → verdict (FIRST SLICE)
-2. **Auth & User Workspace**: Login/signup, saved analyses, history
-3. **Export**: Share links, PDF download
-4. **Monetization**: Stripe tiers, plan gating
+## MVP Complete — Ready for Deployment
+1. Start Postgres: `docker compose up -d`
+2. Push schema: `npm run db:push`
+3. Seed plans: `npm run db:seed`
+4. Start server: `npm run dev --workspace=server`
+5. Start client: `npm run dev --workspace=client`
