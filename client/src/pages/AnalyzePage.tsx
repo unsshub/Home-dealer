@@ -139,9 +139,9 @@ function VerdictHero({ ratio, verdict }: { ratio: number; verdict: string }) {
 function ResultSkeleton() {
   return (
     <div className="space-y-4 animate-pulse">
-      <div className="h-20 rounded-xl bg-secondary/50" />
-      <div className="h-32 rounded-xl bg-secondary/30" />
-      <div className="h-24 rounded-xl bg-secondary/30" />
+      <div className="h-20 rounded-lg bg-secondary/50" />
+      <div className="h-32 rounded-lg bg-secondary/30" />
+      <div className="h-24 rounded-lg bg-secondary/30" />
     </div>
   );
 }
